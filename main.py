@@ -1,7 +1,5 @@
 from ast import If
 import logging
-from multiprocessing import context
-from tabnanny import check
 import time
 import mysql.connector
 from dotenv import dotenv_values
@@ -126,14 +124,20 @@ async def inlinehandle(update: Update, context: CallbackContext.DEFAULT_TYPE):
     query = update.callback_query
     await query.answer()
     if query.data == "register":
-        register_user(user)
-        await query.edit_message_text(
-            write_timeout=5,
-            text="<i>Registering...</i>",
-            parse_mode="HTML"
-        )
-        await query.delete_message(5)
-        await Bot(TOKEN).send_message(chat_id=update.effective_chat.id, text="<i>Register complete</i>", parse_mode="HTML")
+        if not check_user(user):
+            register_user(user)
+            await query.edit_message_text(
+                write_timeout=5,
+                text="<i>Registering...</i>",
+                parse_mode="HTML"
+            )
+            await query.delete_message(5)
+            await Bot(TOKEN).send_message(chat_id=update.effective_chat.id, text="<i>Register complete</i>", parse_mode="HTML")
+        else:
+            await query.edit_message_text(
+                text="<i>Already Registered!</i>",
+                parse_mode="HTML"
+            )
         
 # Command Handles
 async def start(update: Update, context: CallbackContext.DEFAULT_TYPE) -> None:
@@ -187,7 +191,7 @@ def main() -> None:
     application.add_handler(CallbackQueryHandler(inlinehandle))
 
     # Poll bot
-    application.run_polling()
+    application.run_polling(drop_pending_updates=True)
 
 
 if __name__ == "__main__":
