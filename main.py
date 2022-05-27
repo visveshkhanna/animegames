@@ -1,11 +1,11 @@
-from ast import If
 import logging
 import time
-import mysql.connector
 from dotenv import dotenv_values
 
 from telegram import Bot, CallbackQuery, InlineKeyboardButton, InlineKeyboardMarkup, Update
 from telegram.ext import Application, CommandHandler, CallbackContext, MessageHandler, filters, CallbackQueryHandler
+
+from handles.userhandle import * 
 
 # Enable logging
 logging.basicConfig(
@@ -16,17 +16,6 @@ logger = logging.getLogger(__name__)
 # ENV
 data = dotenv_values(".env")
 TOKEN = data["TOKEN"]
-mysql_user = data["USER"]
-mysql_password = data["PASSWORD"]
-mysql_host = data["HOST"]
-mysql_db = data["DB"]
-
-mysql_data = {
-        "user": mysql_user,
-        "password": mysql_password,
-        "host": mysql_host,
-        "database": mysql_db
-    }
 
 # Inline Keyboards
 register_button = [
@@ -35,89 +24,6 @@ register_button = [
     ]
 ]
 register_markup = InlineKeyboardMarkup(register_button)
-
-def Time():
-    return time.strftime("%Y:%m:%d %H:%M:%S")
-
-def check_user(user: Update.effective_user):
-    id = user.id
-    conn = mysql.connector.connect(**mysql_data)
-    cursor = conn.cursor(buffered=True)
-    query = "SELECT * FROM users WHERE userid = %s"
-    values = (id,)
-    cursor.execute(query, values)
-    rc = cursor.rowcount
-    cursor.close()
-    conn.close()
-    if rc == 0:
-        return False
-    else:
-        return True
-    
-def select_user(user: Update.effective_user):
-    id = user.id
-    conn = mysql.connector.connect(**mysql_data)
-    cursor = conn.cursor(buffered=True)
-    query = "SELECT * FROM users WHERE userid = %s"
-    values = (id,)
-    cursor.execute(query, values)
-    data = list(cursor)[0]
-    cursor.close()
-    conn.close()
-    return data
-
-def register_user(user: Update.effective_user):
-    id = user.id
-    name = user.full_name
-    username = user.username
-    date = Time()
-
-    # MySQL Connection
-    conn = mysql.connector.connect(**mysql_data)
-
-    # MySQL cursor
-    cursor = conn.cursor(buffered=True)
-
-    # MySQL Query
-    query = "INSERT INTO users (userid, fullname, username, time) VALUES (%s, %s, %s, %s)"
-    values = (id, name, username, date)
-
-    # MySQL Execute
-    cursor.execute(query, values)
-
-    # Commit
-    conn.commit()
-
-    # Close
-    cursor.close()
-    conn.close()
-
-def update_register_user(user: Update.effective_user):
-    id = user.id
-    name = user.full_name
-    username = user.username
-    date = Time()
-
-    # MySQL Connection
-    conn = mysql.connector.connect(**mysql_data)
-
-    # MySQL cursor
-    cursor = conn.cursor(buffered=True)
-
-    # MySQL Query
-    query = "UPDATE users SET fullname = %s, username = %s WHERE userid = %s"
-    values = (name, username, id)
-
-    # MySQL Execute
-    cursor.execute(query, values)
-
-    # Commit
-    conn.commit()
-
-    # Close
-    cursor.close()
-    conn.close()
-
 
 async def inlinehandle(update: Update, context: CallbackContext.DEFAULT_TYPE):
     user = update.effective_user
@@ -181,7 +87,6 @@ async def info(update: Update, context: CallbackContext.DEFAULT_TYPE) -> None:
 def main() -> None:
 
     application = Application.builder().token(TOKEN).build()
-
     # Commands
     application.add_handler(CommandHandler("start", start))
     application.add_handler(CommandHandler("about", about))
