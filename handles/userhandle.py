@@ -1,7 +1,11 @@
 import mysql.connector
 
 from telegram import Update
+from telegram.ext import CallbackContext
+
+from telegram import Update
 from handles.extras import *
+from handles.markups import *
 from dotenv import dotenv_values
 
 data = dotenv_values(".env")
@@ -18,6 +22,8 @@ mysql_data = {
     "database": mysql_db
 }
 
+async def unregistered(update: Update, context: CallbackContext.DEFAULT_TYPE):
+    await update.message.reply_text("<i>You are not registered in <b><i>Anime Games</i></b>, Register now! by clicking the button below</i>", reply_markup=register_markup, parse_mode="HTML")
 
 def check_user(user: Update.effective_user):
     id = user.id

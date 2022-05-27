@@ -5,7 +5,10 @@ from dotenv import dotenv_values
 from telegram import Bot, CallbackQuery, InlineKeyboardButton, InlineKeyboardMarkup, Update
 from telegram.ext import Application, CommandHandler, CallbackContext, MessageHandler, filters, CallbackQueryHandler
 
-from handles.userhandle import * 
+from handles.userhandle import *
+from handles.inlinehandle import *
+from anilist.anime import *
+from handles.markups import *
 
 # Enable logging
 logging.basicConfig(
@@ -17,34 +20,6 @@ logger = logging.getLogger(__name__)
 data = dotenv_values(".env")
 TOKEN = data["TOKEN"]
 
-# Inline Keyboards
-register_button = [
-    [
-        InlineKeyboardButton(text="Register", callback_data="register")
-    ]
-]
-register_markup = InlineKeyboardMarkup(register_button)
-
-async def inlinehandle(update: Update, context: CallbackContext.DEFAULT_TYPE):
-    user = update.effective_user
-    query = update.callback_query
-    await query.answer()
-    if query.data == "register":
-        if not check_user(user):
-            register_user(user)
-            await query.edit_message_text(
-                write_timeout=5,
-                text="<i>Registering...</i>",
-                parse_mode="HTML"
-            )
-            await query.delete_message(5)
-            await Bot(TOKEN).send_message(chat_id=update.effective_chat.id, text="<i>Register complete</i>", parse_mode="HTML")
-        else:
-            await query.edit_message_text(
-                text="<i>Already Registered!</i>",
-                parse_mode="HTML"
-            )
-        
 # Command Handles
 async def start(update: Update, context: CallbackContext.DEFAULT_TYPE) -> None:
     user = update.effective_user
@@ -64,11 +39,9 @@ async def info(update: Update, context: CallbackContext.DEFAULT_TYPE) -> None:
     user = update.effective_user
     if check_user(user):
         user_data = select_user(user)
-        id = user_data[0]
         userid = user_data[1]
         fullname = user_data[2]
         username = user_data[3]
-        time = user_data[4]
         d = 0
         if [userid, fullname, username] != [user.id, user.full_name, user.username]:
             d = 1
@@ -82,7 +55,7 @@ async def info(update: Update, context: CallbackContext.DEFAULT_TYPE) -> None:
         else:
             await update.message.reply_text(message, parse_mode="HTML")
     else:
-        await update.message.reply_text("<i>You are not registered in <b><i>Anime Games</i></b>, Register now! by clicking the button below</i>", reply_markup=register_markup, parse_mode="HTML")    
+        await unregistered(update, context)
 
 def main() -> None:
 
@@ -91,6 +64,7 @@ def main() -> None:
     application.add_handler(CommandHandler("start", start))
     application.add_handler(CommandHandler("about", about))
     application.add_handler(CommandHandler("info", info))
+    application.add_handler(CommandHandler("anime", searchanime))
 
     # Inline Handle
     application.add_handler(CallbackQueryHandler(inlinehandle))
