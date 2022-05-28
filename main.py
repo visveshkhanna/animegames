@@ -8,6 +8,7 @@ from telegram import Update
 from telegram.ext import Application, CommandHandler, CallbackContext, CallbackQueryHandler
 from commands.search_anime import *
 from commands.search_character import *
+from commands.extras import *
 
 from handles.userhandle import *
 from handles.inlinehandle import *
@@ -93,6 +94,7 @@ def main() -> None:
     application.add_handler(CommandHandler("info", info))
     application.add_handler(CommandHandler("anime", searchanime))
     application.add_handler(CommandHandler("character", searchcharacter))
+    application.add_handler(CommandHandler("ping", ping))
 
     # Inline Handle
     application.add_handler(CallbackQueryHandler(inlinehandle))
