@@ -94,7 +94,7 @@ def main() -> None:
     application.add_handler(CommandHandler("info", info))
     application.add_handler(CommandHandler("anime", searchanime))
     application.add_handler(CommandHandler("character", searchcharacter))
-    application.add_handler(CommandHandler("ping", ping))
+    application.add_handler(CommandHandler("ping", ping_command))
 
     # Inline Handle
     application.add_handler(CallbackQueryHandler(inlinehandle))

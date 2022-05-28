@@ -6,7 +6,7 @@ from handles.extras import *
 from ping3 import ping
 from math import ceil
 
-async def ping(update: Update, context: CallbackContext):
+async def ping_command(update: Update, context: CallbackContext):
     reply = await update.message.reply_text(
         text=italic("Pinging..."),
         parse_mode="HTML"
