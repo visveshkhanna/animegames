@@ -1,9 +1,11 @@
 import logging
-import time
+import html
+import json
+import traceback
 from dotenv import dotenv_values
 
-from telegram import Bot, CallbackQuery, InlineKeyboardButton, InlineKeyboardMarkup, Update
-from telegram.ext import Application, CommandHandler, CallbackContext, MessageHandler, filters, CallbackQueryHandler
+from telegram import Update
+from telegram.ext import Application, CommandHandler, CallbackContext, CallbackQueryHandler
 
 from handles.userhandle import *
 from handles.inlinehandle import *
@@ -19,6 +21,7 @@ logger = logging.getLogger(__name__)
 # ENV
 data = dotenv_values(".env")
 TOKEN = data["TOKEN"]
+OWNER = data["OWNER"]
 
 # Command Handles
 async def start(update: Update, context: CallbackContext.DEFAULT_TYPE) -> None:
@@ -57,6 +60,28 @@ async def info(update: Update, context: CallbackContext.DEFAULT_TYPE) -> None:
     else:
         await unregistered(update, context)
 
+async def error_handler(update: object, context: CallbackContext.DEFAULT_TYPE) -> None:
+
+    logger.error(msg="Exception while handling an update:", exc_info=context.error)
+
+    tb_list = traceback.format_exception(None, context.error, context.error.__traceback__)
+    tb_string = "".join(tb_list)
+
+    update_str = update.to_dict() if isinstance(update, Update) else str(update)
+    message = (
+        f"An exception was raised while handling an update\n"
+        f"<pre>update = {html.escape(json.dumps(update_str, indent=2, ensure_ascii=False))}"
+        "</pre>\n\n"
+        f"<pre>context.chat_data = {html.escape(str(context.chat_data))}</pre>\n\n"
+        f"<pre>context.user_data = {html.escape(str(context.user_data))}</pre>\n\n"
+        f"<pre>{html.escape(tb_string)}</pre>"
+    )
+
+    # Finally, send the message
+    await Bot(TOKEN).send_message(
+        chat_id=OWNER, text=message, parse_mode="HTML"
+    )
+
 def main() -> None:
 
     application = Application.builder().token(TOKEN).build()
@@ -69,8 +94,11 @@ def main() -> None:
     # Inline Handle
     application.add_handler(CallbackQueryHandler(inlinehandle))
 
+    # Error handle
+    application.add_error_handler(error_handler)
+
     # Poll bot
-    application.run_polling(drop_pending_updates=True)
+    application.run_polling(drop_pending_updates=True, stop_signals=None)
 
 
 if __name__ == "__main__":

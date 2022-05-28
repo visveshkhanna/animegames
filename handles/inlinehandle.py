@@ -3,6 +3,7 @@ from telegram.ext import CallbackContext
 from handles.userhandle import *
 from commands.search_anime import *
 from handles.extras import *
+from handles.anime_helper import *
 
 data = dotenv_values(".env")
 TOKEN = data["TOKEN"]
@@ -28,41 +29,26 @@ async def inlinehandle(update: Update, context: CallbackContext.DEFAULT_TYPE):
             )
     if "ani" in query.data:
         anime_id = int(query.data.split(" ")[-1])
-        anime = get_anime(anime_id)["data"]["Media"]
-        anime_banner = f'http://img.anili.st/media/{anime_id}'
-        anime_authors = []
-        for i in anime["staff"]["edges"]:
-            anime_authors.append(i["node"]["name"]["full"])
-        anime_authors = ', '.join(anime_authors[:5])
-        anime_studios = []
-        for i in anime["studios"]["edges"]:
-            anime_studios.append(i["node"]["name"])
-        anime_studios = ', '.join(anime_studios[:5])
-        anime_title = anime["title"]
-        romaji = anime_title["romaji"]
-        native = anime_title["native"]
-        start = f'{anime["startDate"]["day"]} / {anime["startDate"]["month"]} / {anime["startDate"]["year"]}'
-        end = f'{anime["endDate"]["day"]} / {anime["endDate"]["month"]} / {anime["endDate"]["year"]}'
-        anime_source = anime["source"]
-        anime_popularity = anime["popularity"]
-        anime_genre = ', '.join(anime["genres"])
-        anime_episodes = anime["episodes"]
-        anime_status = anime["status"]
-        anime_description = anime["description"]
-        anime_duration = anime["duration"]
-        anime_nsfw = anime["isAdult"]
-        anime_score = anime["averageScore"]
-        anime_format = anime["format"]
-        message = f'{bold(italic(romaji))} [ {code(native)} ]\n\n{bold("Format")}: {anime_format} - {bold("Source")}: {anime_source}\n{bold("Status")}: {anime_status} - {bold("NSFW")}: {anime_nsfw}\n{bold("Score")}: {anime_score} - {anime_popularity}\n{bold("Episodes")}: {anime_episodes} - {bold("Duration")}: {anime_duration} min(s) / epi\n{bold("Aired")}: {start} - {end}\n\n{bold("Genres")}: {anime_genre}\n{bold("Authors")}: {anime_authors}\n{bold("Studios")}: {anime_studios}\n\n{clean(anime_description)[:200]}...{anchor("Read more", "https://anilist.co/anime/{anime_id}")}'
+        new = False
+        if check_anime(anime_id):
+            anime_id, message, anime_banner = fetch_anime(anime_id)
+        else:
+            anime = get_anime(anime_id)["data"]["Media"]
+            anime_banner = f'http://img.anili.st/media/{anime_id}'
+            message = anime_message(anime_id, anime)
+            new = True
         
         await query.answer()
         await query.delete_message()
 
-        await Bot(TOKEN).send_photo(
+        result = await Bot(TOKEN).send_photo(
             chat_id=update.effective_chat.id,
             photo=anime_banner,
             caption=message,
             parse_mode="HTML"
         )
+        if new:
+            fileid = result["photo"][-1].file_id
+            save_anime(anime_id, message, fileid)
         
         
