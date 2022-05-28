@@ -1,9 +1,11 @@
 from telegram import Update, Bot
 from telegram.ext import CallbackContext
 from handles.userhandle import *
-from commands.search_anime import *
 from handles.extras import *
+from anilist.anime import *
 from handles.anime_helper import *
+from anilist.character import *
+from handles.character_helper import *
 
 data = dotenv_values(".env")
 TOKEN = data["TOKEN"]
@@ -50,5 +52,29 @@ async def inlinehandle(update: Update, context: CallbackContext.DEFAULT_TYPE):
         if new:
             fileid = result["photo"][-1].file_id
             save_anime(anime_id, message, fileid)
+
+    if "chr" in query.data:
+        character_id = int(query.data.split(" ")[-1])
+        new = False
+        if check_character(character_id):
+            character_id, message, character_banner = fetch_anime(character_id)
+        else:
+            character = get_character(character_id)["data"]["Character"]
+            character_banner = character["image"]["large"]
+            message = character_message(character_id, character)
+            new = True
+        
+        await query.answer()
+        await query.delete_message()
+
+        result = await Bot(TOKEN).send_photo(
+            chat_id=update.effective_chat.id,
+            photo=character_banner,
+            caption=message,
+            parse_mode="HTML"
+        )
+        if new:
+            fileid = result["photo"][-1].file_id
+            save_character(character_id, message, fileid)
         
         
