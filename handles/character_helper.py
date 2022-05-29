@@ -29,7 +29,7 @@ def character_message(character_id, character):
     month = character_dob["month"]
     day = character_dob["day"]
 
-    message = f'{italic(bold(character_name))} [ {code(character_native)} ]\n\n{bold("Alternative")}: {character_alt}\n\n{bold("Gender")}: {character_gender}\n{bold("Age")}: {character_age} - {bold("DOB")}: {day}/{month}\n\n{character_description[:300]}...{anchor("Read more", f"https://anilist.co/character/{character_id}")}\n\n{bold(italic("From Anilist ❤️"))}'
+    message = f'{italic(bold(character_name))} [ {code(character_native)} ]\n\n{bold("Alternative")}: {character_alt}\n\n{bold("Gender")}: {character_gender}\n{bold("Age")}: {character_age} - {bold("DOB")}: {day}/{month}\n\n{character_description[:300]}...{anchor("Read more", f"https://anilist.co/character/{character_id}")}\n\n{bold(italic("From Anilist ❤️"))} '
     return message
 
 

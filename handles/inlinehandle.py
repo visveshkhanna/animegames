@@ -39,7 +39,7 @@ async def inlinehandle(update: Update, context: CallbackContext.DEFAULT_TYPE):
             anime_id, message, anime_banner = fetch_anime(anime_id)
         else:
             anime = get_anime(anime_id)["data"]["Media"]
-            anime_banner = f'http://img.anili.st/media/{anime_id}'
+            anime_banner = f'https://img.anili.st/media/{anime_id}'
             message = anime_message(anime_id, anime)
             new = True
 

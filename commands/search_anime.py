@@ -1,11 +1,10 @@
-from dotenv import dotenv_values
 from telegram import Update
 from telegram.ext import CallbackContext
 
 from anilist.anime import anime_inline
+from const import LOADING
 from handles.extras import bold
 from handles.userhandle import check_user, unregistered
-from const import LOADING
 
 
 async def searchanime(update: Update, context: CallbackContext.DEFAULT_TYPE):

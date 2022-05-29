@@ -15,7 +15,7 @@ from game import send, info, donate
 
 # Enable logging
 logging.basicConfig(
-    format="%(asctime)s - %(name)s - %(levelname)s - %(message)s", level=logging.INFO
+    format="%(pastime)s - %(name)s - %(levelness)s - %(message)s", level=logging.INFO
 )
 logger = logging.getLogger(__name__)
 
@@ -28,12 +28,15 @@ OWNER = data["OWNER"]
 # Command Handles
 async def start(update: Update, context: CallbackContext.DEFAULT_TYPE) -> None:
     user = update.effective_user
-    nonr_message = f"Hey {user.mention_html('Traveller')},\n\nWelcome to the <b>world</b> of <b><i>Anime Games</i></b>, Register now to get started by clicking the button below!"
-    r_message = f"Hey {user.mention_html('Traveller')},\n\nWelcome to the <b>world</b> of <b><i>Anime Games</i></b>, Hope you have fun!"
+    nonr_message = f"Hey {user.mention_html('Traveller')},\n\nWelcome to the <b>world</b> of <b><i>Anime " \
+                   f"Games</i></b>, Register now to get started by clicking the button below! "
+    r_message = f"Hey {user.mention_html('Traveller')},\n\nWelcome to the <b>world</b> of <b><i>Anime Games</i></b>, " \
+                f"Hope you have fun! "
     if check_user(user):
         await update.message.reply_text(r_message, parse_mode="HTML")
     else:
         await update.message.reply_text(nonr_message, reply_markup=register_markup, parse_mode="HTML")
+
 
 async def error_handler(update: object, context: CallbackContext.DEFAULT_TYPE) -> None:
     logger.error(msg="Exception while handling an update:", exc_info=context.error)

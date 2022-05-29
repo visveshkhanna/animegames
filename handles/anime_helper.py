@@ -42,7 +42,7 @@ def anime_message(anime_id, anime):
     anime_nsfw = anime["isAdult"]
     anime_score = anime["averageScore"]
     anime_format = anime["format"]
-    message = f'{bold(italic(romaji))} [ {code(native)} ]\n\n{bold("Format")}: {anime_format} - {bold("Source")}: {anime_source}\n{bold("Status")}: {anime_status} - {bold("NSFW")}: {anime_nsfw}\n{bold("Score")}: {anime_score} - {bold("Popularity")}: {anime_popularity}\n{bold("Episodes")}: {anime_episodes} - {bold("Duration")}: {anime_duration} min(s) / epi\n{bold("Aired")}: {start} - {end}\n\n{bold("Genres")}: {anime_genre}\n{bold("Authors")}: {anime_authors}\n{bold("Studios")}: {anime_studios}\n\n{clean(anime_description)[:400]}...{anchor("Read more", f"https://anilist.co/anime/{anime_id}")}\n\n{bold(italic("From Anilist ❤️"))}'
+    message = f'{bold(italic(romaji))} [ {code(native)} ]\n\n{bold("Format")}: {anime_format} - {bold("Source")}: {anime_source}\n{bold("Status")}: {anime_status} - {bold("NSFW")}: {anime_nsfw}\n{bold("Score")}: {anime_score} - {bold("Popularity")}: {anime_popularity}\n{bold("Episodes")}: {anime_episodes} - {bold("Duration")}: {anime_duration} min(s) / epi\n{bold("Aired")}: {start} - {end}\n\n{bold("Genres")}: {anime_genre}\n{bold("Authors")}: {anime_authors}\n{bold("Studios")}: {anime_studios}\n\n{clean(anime_description)[:400]}...{anchor("Read more", f"https://anilist.co/anime/{anime_id}")}\n\n{bold(italic("From Anilist ❤️"))} '
 
     return message
 

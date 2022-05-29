@@ -4,6 +4,7 @@ from handles.userhandle import update_coins, check_user, unregistered, select_us
 from handles.extras import italic, bold
 from handles.markups import register_markup
 
+
 async def send_coins(update: Update, context: CallbackContext.DEFAULT_TYPE) -> None:
     user = update.effective_user
     message = update.effective_message
@@ -16,7 +17,7 @@ async def send_coins(update: Update, context: CallbackContext.DEFAULT_TYPE) -> N
                     text=italic('Sending Nothing?, Alphabets? Characters? Only numbers allowed'),
                     parse_mode="HTML"
                 )
-                return 0
+                return
             coins = int(coins)
             from_user = reply_to_message.from_user
             if check_user(from_user):
@@ -61,4 +62,3 @@ async def send_coins(update: Update, context: CallbackContext.DEFAULT_TYPE) -> N
             )
     else:
         await unregistered(update, context)
-

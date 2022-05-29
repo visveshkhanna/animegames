@@ -7,7 +7,7 @@ from const import EMPTY
 
 def about_helper(user):
     data = select_user(user)
-    id, userid, fullname, username, coins, max_coins, gems, max_gems, total_donated, banner, date = data
+    uid, userid, fullname, username, coins, max_coins, gems, max_gems, total_donated, banner, date = data
     content = f"{EMPTY}\n{italic(bold('Name'))} - {user.mention_html(fullname)}\n{italic(bold('Coins'))} - {coins} [ {code(f'MAX {max_coins}')} ]\n{italic(bold('Gems'))} - {gems} [ {code(f'MAX {max_gems}')} ]\n{italic(bold('Donated'))} - {total_donated}\n{italic(bold('DOB'))} - {date}\n{EMPTY} "
     return [banner, content]
 
