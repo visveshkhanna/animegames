@@ -5,8 +5,7 @@ from telegram.ext import CallbackContext
 from anilist.character import character_inline
 from handles.extras import bold
 from handles.userhandle import check_user, unregistered
-
-LOADING = dotenv_values('.env')["LOADING"]
+from const import LOADING
 
 
 async def searchcharacter(update: Update, context: CallbackContext.DEFAULT_TYPE):

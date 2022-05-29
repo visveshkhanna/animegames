@@ -6,6 +6,7 @@ from anilist.character import *
 from handles.anime_helper import *
 from handles.character_helper import *
 from handles.userhandle import check_user, register_user
+from handles.extras import italic
 
 data = dotenv_values(".env")
 TOKEN = data["TOKEN"]
@@ -24,11 +25,11 @@ async def inlinehandle(update: Update, context: CallbackContext.DEFAULT_TYPE):
                 parse_mode="HTML"
             )
             await query.delete_message(5)
-            await Bot(TOKEN).send_message(chat_id=update.effective_chat.id, text="<i>Register complete</i>",
+            await Bot(TOKEN).send_message(chat_id=update.effective_chat.id, text=italic("Register complete"),
                                           parse_mode="HTML")
         else:
             await query.edit_message_text(
-                text="<i>Already Registered!</i>",
+                text=italic(f"{user.mention_html()} have already registered!"),
                 parse_mode="HTML"
             )
     if "ani" in query.data:

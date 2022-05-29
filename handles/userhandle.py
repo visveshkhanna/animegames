@@ -1,10 +1,10 @@
-import mysql.connector
 from dotenv import dotenv_values
 from telegram import Update
 from telegram.ext import CallbackContext
 
 from handles.extras import *
-from handles.markups import *
+from handles.markups import register_markup
+import mysql.connector
 
 data = dotenv_values(".env")
 
@@ -39,8 +39,7 @@ def check_user(user: Update.effective_user):
     conn.close()
     if rc == 0:
         return False
-    else:
-        return True
+    return True
 
 
 def select_user(user: Update.effective_user):
@@ -54,6 +53,33 @@ def select_user(user: Update.effective_user):
     cursor.close()
     conn.close()
     return datas
+
+
+def select_user_v2(user: Update.effective_user):
+    uid = user.id
+    conn = mysql.connector.connect(**mysql_data)
+    cursor = conn.cursor(buffered=True)
+    query = "SELECT * FROM users WHERE userid = %s"
+    values = (uid,)
+    cursor.execute(query, values)
+    datas = list(cursor)[0]
+    id, userid, fullname, username, coins, max_coins, gems, max_gems, total_donated, banner, date = datas
+    user_data = {
+        'id': id,
+        'userid': userid,
+        'fullname': fullname,
+        'username': username,
+        'coins': coins,
+        'max_coins': max_coins,
+        'gems': gems,
+        'max_gems': max_gems,
+        'total_donated': total_donated,
+        'banner': banner,
+        'date': date
+    }
+    cursor.close()
+    conn.close()
+    return user_data
 
 
 def register_user(user: Update.effective_user):
@@ -85,28 +111,23 @@ def register_user(user: Update.effective_user):
     conn.close()
 
 
-def update_register_user(user: Update.effective_user):
-    id = user.id
-    name = user.full_name
-    username = user.username
-    date = Time()
-
-    # MySQL Connection
+def update_coins(userid, coins):
     conn = mysql.connector.connect(**mysql_data)
-
-    # MySQL cursor
     cursor = conn.cursor(buffered=True)
-
-    # MySQL Query
-    query = "UPDATE users SET fullname = %s, username = %s WHERE userid = %s"
-    values = (name, username, id)
-
-    # MySQL Execute
+    query = "UPDATE users SET coins = %s WHERE userid = %s"
+    values = (coins, userid)
     cursor.execute(query, values)
-
-    # Commit
     conn.commit()
+    cursor.close()
+    conn.close()
 
-    # Close
+
+def update_max_coins(userid, coins):
+    conn = mysql.connector.connect(**mysql_data)
+    cursor = conn.cursor(buffered=True)
+    query = "UPDATE users SET max_coins = %s WHERE userid = %s"
+    values = (coins, userid)
+    cursor.execute(query, values)
+    conn.commit()
     cursor.close()
     conn.close()
