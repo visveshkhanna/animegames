@@ -2,9 +2,9 @@ from telegram import Update
 from telegram.ext import CallbackContext
 from dotenv import dotenv_values
 
-from handles.userhandle import *
-from anilist.character import *
-from handles.extras import *
+from handles.userhandle import check_user, unregistered
+from anilist.character import character_inline
+from handles.extras import bold
 
 LOADING = dotenv_values('.env')["LOADING"]
 

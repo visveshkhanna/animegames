@@ -1,7 +1,7 @@
 import mysql.connector
 
 from dotenv import dotenv_values
-from handles.extras import *
+from handles.extras import bold, italic, code, anchor, clean
 
 data = dotenv_values(".env")
 

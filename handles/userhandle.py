@@ -3,7 +3,6 @@ import mysql.connector
 from telegram import Update
 from telegram.ext import CallbackContext
 
-from telegram import Update
 from handles.extras import *
 from handles.markups import *
 from dotenv import dotenv_values

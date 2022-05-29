@@ -6,13 +6,12 @@ from dotenv import dotenv_values
 
 from telegram import Update
 from telegram.ext import Application, CommandHandler, CallbackContext, CallbackQueryHandler
-from commands.search_anime import *
-from commands.search_character import *
-from commands.extras import *
+from commands.search_anime import searchanime
+from commands.search_character import searchcharacter
+from commands.extras import ping_command
 
-from handles.userhandle import *
+from handles.userhandle import update_register_user, select_user, check_user, unregistered
 from handles.inlinehandle import *
-from anilist.anime import *
 from handles.markups import *
 
 # Enable logging

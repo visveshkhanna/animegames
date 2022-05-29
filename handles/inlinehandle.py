@@ -1,6 +1,6 @@
 from telegram import Update, Bot
 from telegram.ext import CallbackContext
-from handles.userhandle import *
+from handles.userhandle import check_user, register_user
 from handles.extras import *
 from anilist.anime import *
 from handles.anime_helper import *
