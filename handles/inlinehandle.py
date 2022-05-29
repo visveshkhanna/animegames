@@ -76,5 +76,3 @@ async def inlinehandle(update: Update, context: CallbackContext.DEFAULT_TYPE):
         if new:
             fileid = result["photo"][-1].file_id
             save_character(character_id, message, fileid)
-        
-        
