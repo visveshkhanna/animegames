@@ -3,6 +3,7 @@ from telegram import InlineKeyboardButton, InlineKeyboardMarkup
 
 url = 'https://graphql.anilist.co'
 
+
 def anime_inline(search):
     query = '''
       query ($query: String, $page: Int, $perpage: Int) {
@@ -35,14 +36,14 @@ def anime_inline(search):
       '''
     c = 0
     variables = {
-    'query': search,
+        'query': search,
     }
     # Make the HTTP Api request
     response = requests.post(url, json={'query': query, 'variables': variables})
-  
+
     response = response.json()["data"]["Page"]
     count = response["pageInfo"]["total"]
-    keyboard = [] 
+    keyboard = []
     for i in range(count):
         if c == 6:
             break
@@ -56,8 +57,9 @@ def anime_inline(search):
         )
     return InlineKeyboardMarkup(keyboard)
 
+
 def get_anime(id):
-  query = '''
+    query = '''
     query ($id: Int) {
     Media(id: $id, type: ANIME) {
       title {
@@ -104,13 +106,11 @@ def get_anime(id):
       genres
     }
   }
-  ''' 
-  variables = {
-    'id': id,
+  '''
+    variables = {
+        'id': id,
     }
-  # Make the HTTP Api request
-  response = requests.post(url, json={'query': query, 'variables': variables})
+    # Make the HTTP Api request
+    response = requests.post(url, json={'query': query, 'variables': variables})
 
-  return response.json()
-
-
+    return response.json()

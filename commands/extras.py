@@ -1,7 +1,9 @@
+from ping3 import ping
 from telegram import Update
 from telegram.ext import CallbackContext
+
 from handles.extras import *
-from ping3 import ping
+
 
 async def ping_command(update: Update, context: CallbackContext):
     reply = await update.message.reply_text(

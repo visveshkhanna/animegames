@@ -1,18 +1,16 @@
-import logging
 import html
 import json
+import logging
 import traceback
-from dotenv import dotenv_values
 
-from telegram import Update
-from telegram.ext import Application, CommandHandler, CallbackContext, CallbackQueryHandler
+from telegram.ext import Application, CommandHandler, CallbackQueryHandler
+
+from commands.extras import ping_command
 from commands.search_anime import searchanime
 from commands.search_character import searchcharacter
-from commands.extras import ping_command
-
-from handles.userhandle import update_register_user, select_user, check_user, unregistered
 from handles.inlinehandle import *
 from handles.markups import *
+from handles.userhandle import update_register_user, select_user, unregistered
 
 # Enable logging
 logging.basicConfig(
@@ -25,6 +23,7 @@ data = dotenv_values(".env")
 TOKEN = data["TOKEN"]
 OWNER = data["OWNER"]
 
+
 # Command Handles
 async def start(update: Update, context: CallbackContext.DEFAULT_TYPE) -> None:
     user = update.effective_user
@@ -35,10 +34,12 @@ async def start(update: Update, context: CallbackContext.DEFAULT_TYPE) -> None:
     else:
         await update.message.reply_text(nonr_message, reply_markup=register_markup, parse_mode="HTML")
 
+
 async def about(update: Update, context: CallbackContext.DEFAULT_TYPE) -> None:
     fileid = data["ABOUT"]
     message = "<b>Anime Games</b> is a Telegram bot that provides you with a variety of games to play."
     await update.message.reply_photo(fileid, message, parse_mode="HTML")
+
 
 async def info(update: Update, context: CallbackContext.DEFAULT_TYPE) -> None:
     user = update.effective_user
@@ -62,8 +63,8 @@ async def info(update: Update, context: CallbackContext.DEFAULT_TYPE) -> None:
     else:
         await unregistered(update, context)
 
-async def error_handler(update: object, context: CallbackContext.DEFAULT_TYPE) -> None:
 
+async def error_handler(update: object, context: CallbackContext.DEFAULT_TYPE) -> None:
     logger.error(msg="Exception while handling an update:", exc_info=context.error)
 
     tb_list = traceback.format_exception(None, context.error, context.error.__traceback__)
@@ -84,8 +85,8 @@ async def error_handler(update: object, context: CallbackContext.DEFAULT_TYPE) -
         chat_id=OWNER, text=message, parse_mode="HTML"
     )
 
-def main() -> None:
 
+def main() -> None:
     application = Application.builder().token(TOKEN).build()
     # Commands
     application.add_handler(CommandHandler("start", start))

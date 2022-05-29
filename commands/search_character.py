@@ -1,12 +1,13 @@
+from dotenv import dotenv_values
 from telegram import Update
 from telegram.ext import CallbackContext
-from dotenv import dotenv_values
 
-from handles.userhandle import check_user, unregistered
 from anilist.character import character_inline
 from handles.extras import bold
+from handles.userhandle import check_user, unregistered
 
 LOADING = dotenv_values('.env')["LOADING"]
+
 
 async def searchcharacter(update: Update, context: CallbackContext.DEFAULT_TYPE):
     user = update.effective_user
@@ -16,7 +17,7 @@ async def searchcharacter(update: Update, context: CallbackContext.DEFAULT_TYPE)
         markup = character_inline(data)
         await update.message.reply_animation(
             animation=LOADING,
-            caption = f"Searching for {bold(data.capitalize())} ...",
+            caption=f"Searching for {bold(data.capitalize())} ...",
             reply_markup=markup,
             parse_mode="HTML"
         )

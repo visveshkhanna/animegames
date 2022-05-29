@@ -1,14 +1,15 @@
 from telegram import Update, Bot
 from telegram.ext import CallbackContext
-from handles.userhandle import check_user, register_user
-from handles.extras import *
+
 from anilist.anime import *
-from handles.anime_helper import *
 from anilist.character import *
+from handles.anime_helper import *
 from handles.character_helper import *
+from handles.userhandle import check_user, register_user
 
 data = dotenv_values(".env")
 TOKEN = data["TOKEN"]
+
 
 async def inlinehandle(update: Update, context: CallbackContext.DEFAULT_TYPE):
     user = update.effective_user
@@ -23,7 +24,8 @@ async def inlinehandle(update: Update, context: CallbackContext.DEFAULT_TYPE):
                 parse_mode="HTML"
             )
             await query.delete_message(5)
-            await Bot(TOKEN).send_message(chat_id=update.effective_chat.id, text="<i>Register complete</i>", parse_mode="HTML")
+            await Bot(TOKEN).send_message(chat_id=update.effective_chat.id, text="<i>Register complete</i>",
+                                          parse_mode="HTML")
         else:
             await query.edit_message_text(
                 text="<i>Already Registered!</i>",
@@ -39,7 +41,7 @@ async def inlinehandle(update: Update, context: CallbackContext.DEFAULT_TYPE):
             anime_banner = f'http://img.anili.st/media/{anime_id}'
             message = anime_message(anime_id, anime)
             new = True
-        
+
         await query.answer()
         await query.delete_message()
 
@@ -63,7 +65,7 @@ async def inlinehandle(update: Update, context: CallbackContext.DEFAULT_TYPE):
             character_banner = character["image"]["large"]
             message = character_message(character_id, character)
             new = True
-        
+
         await query.answer()
         await query.delete_message()
 

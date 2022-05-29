@@ -1,6 +1,6 @@
 import mysql.connector
-
 from dotenv import dotenv_values
+
 from handles.extras import bold, italic, code, anchor
 
 data = dotenv_values(".env")
@@ -17,6 +17,7 @@ mysql_data = {
     "database": mysql_db
 }
 
+
 def character_message(character_id, character):
     character_name = character["name"]["full"]
     character_native = character["name"]["native"]
@@ -31,6 +32,7 @@ def character_message(character_id, character):
     message = f'{italic(bold(character_name))} [ {code(character_native)} ]\n\n{bold("Alternative")}: {character_alt}\n\n{bold("Gender")}: {character_gender}\n{bold("Age")}: {character_age} - {bold("DOB")}: {day}/{month}\n\n{character_description[:300]}...{anchor("Read more", f"https://anilist.co/character/{character_id}")}\n\n{bold(italic("From Anilist ❤️"))}'
     return message
 
+
 def check_character(characterid):
     conn = mysql.connector.connect(**mysql_data)
     cursor = conn.cursor(buffered=True)
@@ -43,7 +45,8 @@ def check_character(characterid):
     if rc == 0:
         return False
     else:
-        return True 
+        return True
+
 
 def fetch_character(characterid):
     conn = mysql.connector.connect(**mysql_data)
@@ -55,6 +58,7 @@ def fetch_character(characterid):
     cursor.close()
     conn.close()
     return data[1], data[2], data[3]
+
 
 def save_character(characterid, caption, fileid):
     conn = mysql.connector.connect(**mysql_data)

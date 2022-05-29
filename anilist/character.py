@@ -3,6 +3,7 @@ from telegram import InlineKeyboardButton, InlineKeyboardMarkup
 
 url = 'https://graphql.anilist.co'
 
+
 def character_inline(search):
     query = '''
     query ($query: String, $page: Int, $perpage: Int) {
@@ -25,7 +26,7 @@ def character_inline(search):
     '''
     c = 0
     variables = {
-    'query': search,
+        'query': search,
     }
     # Make the HTTP Api request
     response = requests.post(url, json={'query': query, 'variables': variables})
@@ -45,6 +46,7 @@ def character_inline(search):
             ]
         )
     return InlineKeyboardMarkup(keyboard)
+
 
 def get_character(id):
     query = '''

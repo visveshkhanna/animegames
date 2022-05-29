@@ -1,6 +1,6 @@
 import mysql.connector
-
 from dotenv import dotenv_values
+
 from handles.extras import bold, italic, code, anchor, clean
 
 data = dotenv_values(".env")
@@ -16,6 +16,7 @@ mysql_data = {
     "host": mysql_host,
     "database": mysql_db
 }
+
 
 def anime_message(anime_id, anime):
     anime_authors = []
@@ -45,6 +46,7 @@ def anime_message(anime_id, anime):
 
     return message
 
+
 def check_anime(animeid):
     conn = mysql.connector.connect(**mysql_data)
     cursor = conn.cursor(buffered=True)
@@ -57,7 +59,8 @@ def check_anime(animeid):
     if rc == 0:
         return False
     else:
-        return True 
+        return True
+
 
 def fetch_anime(animeid):
     conn = mysql.connector.connect(**mysql_data)
@@ -69,6 +72,7 @@ def fetch_anime(animeid):
     cursor.close()
     conn.close()
     return data[1], data[2], data[3]
+
 
 def save_anime(animeid, caption, fileid):
     conn = mysql.connector.connect(**mysql_data)
