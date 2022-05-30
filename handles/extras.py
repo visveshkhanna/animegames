@@ -1,5 +1,6 @@
 import re
 import time
+from random import randint
 
 
 def bold(string):
@@ -27,3 +28,13 @@ def clean(text):
 
 def Time():
     return time.strftime("%Y:%m:%d %H:%M:%S")
+
+
+def animetransid():
+    succ = False
+    context = "AGTRANS_"
+    range_start = 10 ** (10 - 1)
+    range_end = (10 ** 10) - 1
+    num = randint(range_start, range_end)
+    context += str(num)
+    return context

@@ -1,3 +1,4 @@
+import asyncio
 import html
 import json
 import logging
@@ -10,12 +11,13 @@ from commands.search_anime import searchanime
 from commands.search_character import searchcharacter
 from handles.inlinehandle import *
 from handles.markups import *
+from transactions.transactions import view_trans
 
 from game import send, info, donate
 
 # Enable logging
 logging.basicConfig(
-    format="%(pastime)s - %(name)s - %(levelness)s - %(message)s", level=logging.INFO
+    format="%(asctime)s - %(name)s - %(levelname)s - %(message)s", level=logging.INFO
 )
 logger = logging.getLogger(__name__)
 
@@ -61,7 +63,7 @@ async def error_handler(update: object, context: CallbackContext.DEFAULT_TYPE) -
 
 
 def main() -> None:
-    application = Application.builder().token(TOKEN).build()
+    application = Application.builder().token(TOKEN).concurrent_updates(True).build()
     # Commands
     application.add_handler(CommandHandler("start", start))
     application.add_handler(CommandHandler("info", info.about))
@@ -69,6 +71,7 @@ def main() -> None:
     application.add_handler(CommandHandler("anime", searchanime))
     application.add_handler(CommandHandler("character", searchcharacter))
     application.add_handler(CommandHandler("ping", ping_command))
+    application.add_handler(CommandHandler("trans", view_trans))
 
     # Inline Handle
     application.add_handler(CallbackQueryHandler(inlinehandle))
@@ -81,4 +84,4 @@ def main() -> None:
 
 
 if __name__ == "__main__":
-    main()
+    asyncio.run(main())

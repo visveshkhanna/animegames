@@ -1,9 +1,9 @@
 from telegram import Update
 from telegram.ext import CallbackContext
 from handles.userhandle import update_coins, check_user, unregistered, select_user_v2, update_max_coins
-from handles.extras import italic, bold
+from handles.extras import italic, bold, animetransid
 from handles.markups import register_markup
-
+from transactions.transactions_handle import create_transaction, check_transaction
 
 async def send_coins(update: Update, context: CallbackContext.DEFAULT_TYPE) -> None:
     user = update.effective_user
@@ -33,11 +33,17 @@ async def send_coins(update: Update, context: CallbackContext.DEFAULT_TYPE) -> N
                     rcoins = receiver["coins"]
                     uscoins = scoins - coins
                     if uscoins > 0:
+                        transid = animetransid()
+                        while (check_transaction(transid)):
+                            transid = animetransid()
                         update_coins(user.id, uscoins)
                         urcoins = rcoins + coins
                         update_coins(from_user.id, urcoins)
+                        create_transaction(transid, user.id, coins, "debit")
+                        create_transaction(transid, from_user.id, coins, "credit")
                         if urcoins > rcoins:
                             update_max_coins(from_user.id, urcoins)
+
                         await update.message.reply_text(
                             text=f'{user.mention_html()} just send {italic(bold(coins))} to {from_user.mention_html()}',
                             parse_mode="HTML"

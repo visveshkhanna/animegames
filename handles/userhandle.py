@@ -1,24 +1,11 @@
 from dotenv import dotenv_values
 from telegram import Update
 from telegram.ext import CallbackContext
+from const import mysql_data
 
 from handles.extras import *
 from handles.markups import register_markup
 import mysql.connector
-
-data = dotenv_values(".env")
-
-mysql_user = data["USER"]
-mysql_password = data["PASSWORD"]
-mysql_host = data["HOST"]
-mysql_db = data["DB"]
-
-mysql_data = {
-    "user": mysql_user,
-    "password": mysql_password,
-    "host": mysql_host,
-    "database": mysql_db
-}
 
 
 async def unregistered(update: Update, context: CallbackContext.DEFAULT_TYPE):
