@@ -1,8 +1,9 @@
 from telegram import Update
 from telegram.ext import CallbackContext
-from handles.userhandle import check_user, select_user, unregistered
-from handles.extras import bold, italic, code
+
 from const import EMPTY
+from handles.extras import bold, italic, code
+from handles.userhandle import check_user, select_user, unregistered
 
 
 def about_helper(user):

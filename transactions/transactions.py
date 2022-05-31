@@ -1,8 +1,9 @@
-from telegram import Update, InlineKeyboardMarkup, InlineKeyboardButton
+from telegram import Update
 from telegram.ext import CallbackContext
 
 from handles.userhandle import unregistered, check_user
-from transactions.transactions_handle import check_transaction, create_transaction, get_transactions
+from transactions.transactions_handle import get_transactions
+
 
 async def view_trans(update: Update, context: CallbackContext.DEFAULT_TYPE):
     user = update.effective_user

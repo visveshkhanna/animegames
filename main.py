@@ -9,11 +9,10 @@ from telegram.ext import Application, CommandHandler, CallbackQueryHandler
 from commands.extras import ping_command
 from commands.search_anime import searchanime
 from commands.search_character import searchcharacter
+from game import send, info
 from handles.inlinehandle import *
 from handles.markups import *
 from transactions.transactions import view_trans
-
-from game import send, info, donate
 
 # Enable logging
 logging.basicConfig(

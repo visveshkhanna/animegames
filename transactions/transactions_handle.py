@@ -1,7 +1,9 @@
-from telegram import Update
-from const import mysql_data
 import mysql.connector
+from telegram import Update
+
+from const import mysql_data
 from handles.extras import Time
+
 
 def check_transaction(transid):
     conn = mysql.connector.connect(**mysql_data)
@@ -15,6 +17,7 @@ def check_transaction(transid):
     else:
         return True
 
+
 def create_transaction(transid, user, coins, type):
     date = Time()
     conn = mysql.connector.connect(**mysql_data)
@@ -25,6 +28,7 @@ def create_transaction(transid, user, coins, type):
     conn.commit()
     cursor.close()
     conn.close()
+
 
 def get_transactions(user: Update.effective_user):
     user_id = user.id

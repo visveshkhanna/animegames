@@ -1,11 +1,10 @@
-from dotenv import dotenv_values
+import mysql.connector
 from telegram import Update
 from telegram.ext import CallbackContext
-from const import mysql_data
 
+from const import mysql_data
 from handles.extras import *
 from handles.markups import register_markup
-import mysql.connector
 
 
 async def unregistered(update: Update, context: CallbackContext.DEFAULT_TYPE):

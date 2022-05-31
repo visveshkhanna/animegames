@@ -5,8 +5,8 @@ from anilist.anime import *
 from anilist.character import *
 from handles.anime_helper import *
 from handles.character_helper import *
-from handles.userhandle import check_user, register_user
 from handles.extras import italic
+from handles.userhandle import check_user, register_user
 
 data = dotenv_values(".env")
 TOKEN = data["TOKEN"]
