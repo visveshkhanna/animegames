@@ -2,7 +2,7 @@ import mysql.connector
 from telegram import Update
 
 from const import mysql_data
-from handles.extras import Time
+from handles.extras import Time, code, bold, italic
 
 
 def check_transaction(transid):
@@ -37,6 +37,33 @@ def get_transactions(user: Update.effective_user):
     query = "SELECT * FROM transactions WHERE userid = %s"
     values = (user_id,)
     cursor.execute(query, values)
-    print(list(cursor))
+    contents = list(cursor)
     cursor.close()
     conn.close()
+    message = f"{bold(italic('Transaction History'))} \n\n"
+    for n, content in enumerate(contents):
+        transid = content["transid"]
+        coins = content["coins"]
+        type = type_handle(content["type"])
+        if coin_handle(type):
+            coins *= -1
+        time = content["time"]
+        mess = code(f'{n + 1} {type} {transid} {coins} {time}\n')
+        message += mess
+    return message
+
+
+def type_handle(data):
+    ans = ""
+    if data == "debit":
+        ans = "DB"
+    elif data == "credit":
+        ans = "CR"
+    return ans
+
+
+def coin_handle(type):
+    ans = False
+    if type == "DB":
+        ans = True
+    return ans

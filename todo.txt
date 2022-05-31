@@ -4,7 +4,7 @@
 ## Anime API
 # search anime, search character
 ## Basic Game handles 
-# storage -> coins, gems, send, receive, bet, donate
+# storage -> coins, gems, send, receive, bet, donate, trans, bank
 ## Store
 # Characters, coin coversions 
 ## Characters
