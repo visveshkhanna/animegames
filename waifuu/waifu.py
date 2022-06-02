@@ -1,9 +1,11 @@
-import requests
-from handles.userhandle import check_user, unregistered
-from const import mysql_data
 import mysql.connector
+import requests
 from telegram import Update
 from telegram.ext import CallbackContext
+
+from const import mysql_data
+from handles.userhandle import check_user, unregistered
+
 
 async def waifu_com(update: Update, context: CallbackContext.DEFAULT_TYPE):
     user = update.effective_user
@@ -23,16 +25,18 @@ async def waifu_com(update: Update, context: CallbackContext.DEFAULT_TYPE):
     else:
         await unregistered(update, context)
 
+
 def waifu_gen():
     url = "https://api.waifu.im/random/"
     data = requests.get(url).json()
     return data["images"][0]["url"]
 
+
 def check_waifu(gen):
     conn = mysql.connector.connect(**mysql_data)
     cursor = conn.cursor(buffered=True)
     query = "SELECT * FROM waifu WHERE url = %s"
-    values = (gen, )
+    values = (gen,)
     cursor.execute(query, values)
     rc = cursor.rowcount
     cursor.close()
@@ -41,16 +45,18 @@ def check_waifu(gen):
         return False
     return True
 
+
 def get_waifu(gen):
     conn = mysql.connector.connect(**mysql_data)
     cursor = conn.cursor(buffered=True, dictionary=True)
     query = "SELECT * FROM waifu WHERE url = %s"
-    values = (gen, )
+    values = (gen,)
     cursor.execute(query, values)
     data = list(cursor)[0]
     cursor.close()
     conn.close()
     return data["fileid"]
+
 
 def save_waifu(fileid, url):
     conn = mysql.connector.connect(**mysql_data)
