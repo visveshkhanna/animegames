@@ -13,6 +13,7 @@ from game import send, info
 from handles.inlinehandle import *
 from handles.markups import *
 from transactions.transactions import view_trans
+from waifuu.waifu import waifu_com
 
 # Enable logging
 logging.basicConfig(
@@ -71,6 +72,7 @@ def main() -> None:
     application.add_handler(CommandHandler("character", searchcharacter))
     application.add_handler(CommandHandler("ping", ping_command))
     application.add_handler(CommandHandler("trans", view_trans))
+    application.add_handler(CommandHandler("waifu", waifu_com))
 
     # Inline Handle
     application.add_handler(CallbackQueryHandler(inlinehandle))
