@@ -15,9 +15,11 @@ async def waifu_com(update: Update, context: CallbackContext.DEFAULT_TYPE):
                 photo=wai
             )
         else:
-            await update.message.reply_photo(
+            data = await update.message.reply_photo(
                 photo=gen
             )
+            fileid = data["photo"][-1].file_id
+            save_waifu(fileid, gen)
     else:
         await unregistered(update, context)
 
@@ -49,3 +51,13 @@ def get_waifu(gen):
     cursor.close()
     conn.close()
     return data["fileid"]
+
+def save_waifu(fileid, url):
+    conn = mysql.connector.connect(**mysql_data)
+    cursor = conn.cursor(buffered=True)
+    query = "INSERT INTO waifu (url, fileid) VALUES (%s, %s)"
+    values = (url, fileid)
+    cursor.execute(query, values)
+    conn.commit()
+    cursor.close()
+    conn.close()
