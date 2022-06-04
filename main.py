@@ -4,7 +4,7 @@ import json
 import logging
 import traceback
 
-from telegram.ext import Application, CommandHandler, CallbackQueryHandler
+from telegram.ext import Application, CommandHandler, CallbackQueryHandler, filters
 
 from commands.extras import ping_command
 from commands.search_anime import searchanime
@@ -14,6 +14,7 @@ from handles.inlinehandle import *
 from handles.markups import *
 from transactions.transactions import view_trans
 from waifuu.waifu import waifu_com
+from speed.speedtest_command import speedtest
 
 # Enable logging
 logging.basicConfig(
@@ -73,6 +74,7 @@ def main() -> None:
     application.add_handler(CommandHandler("ping", ping_command))
     application.add_handler(CommandHandler("trans", view_trans))
     application.add_handler(CommandHandler("waifu", waifu_com))
+    application.add_handler(CommandHandler('speed', speedtest, filters=filters.User(user_id=int(OWNER))))
 
     # Inline Handle
     application.add_handler(CallbackQueryHandler(inlinehandle))
