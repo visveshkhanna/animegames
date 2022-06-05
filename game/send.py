@@ -28,8 +28,8 @@ async def send_coins(update: Update, context: CallbackContext.DEFAULT_TYPE) -> N
                         text=f'{italic("Aww, Sending coins to Yourself?")} 😂',
                         parse_mode="HTML"
                     )
-                elif coins > 0:
-                    await update.message.reply_text(
+                elif coins == 0:
+                    await update.message.reply_text
                         text=f'{user.mention_html()}, Please send more than 0 coins!!!',
                         parse_mode="HTML"
                     )
