@@ -29,7 +29,7 @@ async def send_coins(update: Update, context: CallbackContext.DEFAULT_TYPE) -> N
                         parse_mode="HTML"
                     )
                 elif coins == 0:
-                    await update.message.reply_text
+                    await update.message.reply_text(
                         text=f'{user.mention_html()}, Please send more than 0 coins!!!',
                         parse_mode="HTML"
                     )
