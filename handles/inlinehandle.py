@@ -7,6 +7,7 @@ from handles.anime_helper import *
 from handles.character_helper import *
 from handles.extras import italic
 from handles.userhandle import check_user, register_user
+from transactions.transactions_handle import get_transactions, ListHandle, transaction_message
 
 data = dotenv_values(".env")
 TOKEN = data["TOKEN"]
@@ -79,3 +80,40 @@ async def inlinehandle(update: Update, context: CallbackContext.DEFAULT_TYPE):
         if new:
             fileid = result["photo"][-1].file_id
             save_character(character_id, message, fileid)
+    
+    if "TRA" in query.data:
+        callbackdata = query.data
+        callbackdata = int(callbackdata.split(" ")[-1])
+        data = ListHandle(get_transactions(user), 10)
+        if (callbackdata == (len(data)-1)):
+            button = [
+                [
+                    InlineKeyboardButton("Back", callback_data=f'TRA {callbackdata-1}')
+                ]
+            ]
+            button = InlineKeyboardMarkup(button)
+        elif (callbackdata == 0):
+            button = [
+                [
+                    InlineKeyboardButton("Next", callback_data=f'TRA {callbackdata+1}')
+                ]
+            ]
+            button = InlineKeyboardMarkup(button)
+        else:
+            button = [
+                [
+                    InlineKeyboardButton("Back", callback_data=f'TRA {callbackdata-1}'),
+                    InlineKeyboardButton("Next", callback_data=f'TRA {callbackdata+1}')
+                ]
+            ]
+            button = InlineKeyboardMarkup(button)
+        data = data[callbackdata]
+        message = f"Transation History\nPage {callbackdata+1}\n\n"
+        for i, cont in enumerate(data):
+            messagecont = transaction_message(cont, i+1)
+            message += messagecont
+        await query.edit_message_text(
+            text=message,
+            parse_mode="HTML",
+            reply_markup=button
+        )

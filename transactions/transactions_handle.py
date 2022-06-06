@@ -40,16 +40,16 @@ def get_transactions(user: Update.effective_user):
     contents = list(cursor)
     cursor.close()
     conn.close()
-    message = f"{bold(italic('Transaction History'))} \n\n"
-    for n, content in enumerate(contents):
-        transid = content["transid"]
-        coins = content["coins"]
-        type = type_handle(content["type"])
-        if coin_handle(type):
-            coins *= -1
-        time = content["time"]
-        mess = code(f'{n + 1} {type} {transid} {coins} {time}\n')
-        message += mess
+    return contents
+
+def transaction_message(content, n):
+    transid = content["transid"]
+    coins = content["coins"]
+    type = type_handle(content["type"])
+    if coin_handle(type):
+        coins *= -1
+    time = content["time"]
+    message = code(f'{n} {type} {transid} {coins} {time}\n')
     return message
 
 
@@ -67,3 +67,9 @@ def coin_handle(type):
     if type == "DB":
         ans = True
     return ans
+
+def ListHandle(List, n):
+	parts = []
+	for i in range(0, len(List), n):
+		parts.append(List[i:i+n])
+	return parts
