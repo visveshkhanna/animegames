@@ -66,25 +66,25 @@ async def error_handler(update: object, context: CallbackContext.DEFAULT_TYPE) -
 def main() -> None:
     application = Application.builder().token(TOKEN).build()
     # Commands
-    application.add_handler(CommandHandler("start", start, block=False))
-    application.add_handler(CommandHandler("info", info.about, block=False))
-    application.add_handler(CommandHandler("send", send.send_coins, block=False))
-    application.add_handler(CommandHandler("anime", searchanime, block=False))
-    application.add_handler(CommandHandler("character", searchcharacter, block=False))
-    application.add_handler(CommandHandler("ping", ping_command, block=False))
-    application.add_handler(CommandHandler("trans", view_trans, block=False))
-    application.add_handler(CommandHandler("waifu", waifu_com, block=False))
-    application.add_handler(CommandHandler('speed', speedtest, filters=filters.User(user_id=int(OWNER)), block=False))
+    application.add_handler(CommandHandler("start", start))
+    application.add_handler(CommandHandler("info", info.about))
+    application.add_handler(CommandHandler("send", send.send_coins))
+    application.add_handler(CommandHandler("anime", searchanime))
+    application.add_handler(CommandHandler("character", searchcharacter))
+    application.add_handler(CommandHandler("ping", ping_command))
+    application.add_handler(CommandHandler("trans", view_trans))
+    application.add_handler(CommandHandler("waifu", waifu_com))
+    application.add_handler(CommandHandler('speed', speedtest, filters=filters.User(user_id=int(OWNER))))
 
     # Inline Handle
-    application.add_handler(CallbackQueryHandler(inlinehandle,block=False))
+    application.add_handler(CallbackQueryHandler(inlinehandle))
 
     # Error handle
-    application.add_error_handler(error_handler, block=False)
+    application.add_error_handler(error_handler)
 
     # Poll bot
-    application.run_polling(drop_pending_updates=True, stop_signals=None)
+    application.run_polling(drop_pending_updates=True)
 
 
 if __name__ == "__main__":
-    asyncio.run(main())
+    main()
