@@ -12,7 +12,7 @@ async def view_trans(update: Update, context: CallbackContext.DEFAULT_TYPE):
         if len(split) > 1:
             next_button = [
                 [
-                    InlineKeyboardButton("Next", callback_data=f'TRA 1')
+                    InlineKeyboardButton("Next", callback_data=f'TRA {user.id} 1')
                 ]
             ]
             next_button = InlineKeyboardMarkup(next_button)

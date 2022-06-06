@@ -1,10 +1,10 @@
 import requests
-from telegram import InlineKeyboardButton, InlineKeyboardMarkup
+from telegram import InlineKeyboardButton, InlineKeyboardMarkup, Update
 
 url = 'https://graphql.anilist.co'
 
 
-def anime_inline(search):
+def anime_inline(user, search):
     query = '''
       query ($query: String, $page: Int, $perpage: Int) {
         Page(page: $page, perPage: $perpage) {
@@ -52,7 +52,7 @@ def anime_inline(search):
         title = response["media"][i]["title"]["romaji"]
         keyboard.append(
             [
-                InlineKeyboardButton(text=title, callback_data=f"ani {id}")
+                InlineKeyboardButton(text=title, callback_data=f"ani {user.id} {id}")
             ]
         )
     return InlineKeyboardMarkup(keyboard)

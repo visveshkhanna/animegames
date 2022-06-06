@@ -16,8 +16,8 @@ TOKEN = data["TOKEN"]
 async def inlinehandle(update: Update, context: CallbackContext.DEFAULT_TYPE):
     user = update.effective_user
     query = update.callback_query
-    await query.answer()
     if query.data == "register":
+        await query.answer()
         if not check_user(user):
             register_user(user)
             await query.edit_message_text(
@@ -35,85 +35,95 @@ async def inlinehandle(update: Update, context: CallbackContext.DEFAULT_TYPE):
             )
     if "ani" in query.data:
         anime_id = int(query.data.split(" ")[-1])
-        new = False
-        if check_anime(anime_id):
-            anime_id, message, anime_banner = fetch_anime(anime_id)
+        if query.data.split(" ")[1] == str(user.id):
+            new = False
+            if check_anime(anime_id):
+                anime_id, message, anime_banner = fetch_anime(anime_id)
+            else:
+                anime = get_anime(anime_id)["data"]["Media"]
+                anime_banner = f'https://img.anili.st/media/{anime_id}'
+                message = anime_message(anime_id, anime)
+                new = True
+
+            await query.answer()
+            await query.delete_message()
+
+            result = await Bot(TOKEN).send_photo(
+                chat_id=update.effective_chat.id,
+                photo=anime_banner,
+                caption=message,
+                parse_mode="HTML"
+            )
+            if new:
+                fileid = result["photo"][-1].file_id
+                save_anime(anime_id, message, fileid)
         else:
-            anime = get_anime(anime_id)["data"]["Media"]
-            anime_banner = f'https://img.anili.st/media/{anime_id}'
-            message = anime_message(anime_id, anime)
-            new = True
-
-        await query.answer()
-        await query.delete_message()
-
-        result = await Bot(TOKEN).send_photo(
-            chat_id=update.effective_chat.id,
-            photo=anime_banner,
-            caption=message,
-            parse_mode="HTML"
-        )
-        if new:
-            fileid = result["photo"][-1].file_id
-            save_anime(anime_id, message, fileid)
+            await query.answer("Not allowed", show_alert=True)
 
     if "chr" in query.data:
         character_id = int(query.data.split(" ")[-1])
-        new = False
-        if check_character(character_id):
-            character_id, message, character_banner = fetch_anime(character_id)
+        if query.data.split(" ")[1] == str(user.id):
+            new = False
+            if check_character(character_id):
+                character_id, message, character_banner = fetch_anime(character_id)
+            else:
+                character = get_character(character_id)["data"]["Character"]
+                character_banner = character["image"]["large"]
+                message = character_message(character_id, character)
+                new = True
+
+            await query.answer()
+            await query.delete_message()
+
+            result = await Bot(TOKEN).send_photo(
+                chat_id=update.effective_chat.id,
+                photo=character_banner,
+                caption=message,
+                parse_mode="HTML"
+            )
+            if new:
+                fileid = result["photo"][-1].file_id
+                save_character(character_id, message, fileid)
         else:
-            character = get_character(character_id)["data"]["Character"]
-            character_banner = character["image"]["large"]
-            message = character_message(character_id, character)
-            new = True
-
-        await query.answer()
-        await query.delete_message()
-
-        result = await Bot(TOKEN).send_photo(
-            chat_id=update.effective_chat.id,
-            photo=character_banner,
-            caption=message,
-            parse_mode="HTML"
-        )
-        if new:
-            fileid = result["photo"][-1].file_id
-            save_character(character_id, message, fileid)
+            await query.answer("Not allowed", show_alert=True)
     
     if "TRA" in query.data:
         callbackdata = query.data
-        callbackdata = int(callbackdata.split(" ")[-1])
-        data = ListHandle(get_transactions(user), 10)
-        if (callbackdata == (len(data)-1)):
-            button = [
-                [
-                    InlineKeyboardButton("Back", callback_data=f'TRA {callbackdata-1}')
+        if user.id == int(callbackdata.split(" ")[1]):
+            await query.answer()
+            callbackdata = int(callbackdata.split(" ")[-1])
+            data = ListHandle(get_transactions(user), 10)
+            if (callbackdata == (len(data)-1)):
+                button = [
+                    [
+                        InlineKeyboardButton("Back", callback_data=f'TRA {user.id} {callbackdata-1}')
+                    ]
                 ]
-            ]
-            button = InlineKeyboardMarkup(button)
-        elif (callbackdata == 0):
-            button = [
-                [
-                    InlineKeyboardButton("Next", callback_data=f'TRA {callbackdata+1}')
+                button = InlineKeyboardMarkup(button)
+            elif (callbackdata == 0):
+                button = [
+                    [
+                        InlineKeyboardButton("Next", callback_data=f'TRA {user.id} {callbackdata+1}')
+                    ]
                 ]
-            ]
-            button = InlineKeyboardMarkup(button)
+                button = InlineKeyboardMarkup(button)
+            else:
+                button = [
+                    [
+                        InlineKeyboardButton("Back", callback_data=f'TRA {user.id} {callbackdata-1}'),
+                        InlineKeyboardButton("Next", callback_data=f'TRA {user.id} {callbackdata+1}')
+                    ]
+                ]
+                button = InlineKeyboardMarkup(button)
+            data = data[callbackdata]
+            message = f"Transation History\nPage {callbackdata+1}\n\n"
+            for i, cont in enumerate(data):
+                messagecont = transaction_message(cont, i+1)
+                message += messagecont
+            await query.edit_message_text(
+                text=message,
+                parse_mode="HTML",
+                reply_markup=button
+            )
         else:
-            button = [
-                [
-                    InlineKeyboardButton("Back", callback_data=f'TRA {callbackdata-1}'),
-                    InlineKeyboardButton("Next", callback_data=f'TRA {callbackdata+1}')
-                ]
-            ]
-            button = InlineKeyboardMarkup(button)
-        data = data[callbackdata]
-        message = f"Transation History\nPage {callbackdata+1}\n\n"
-        for i, cont in enumerate(data):
-            messagecont = transaction_message(cont, i+1)
-            message += messagecont
-        await query.edit_message_text(
-            text=message,
-            parse_mode="HTML",
-            reply_markup=button
-        )
+            await query.answer("Not allowed", show_alert=True)

@@ -12,7 +12,7 @@ async def searchcharacter(update: Update, context: CallbackContext.DEFAULT_TYPE)
     msg = update.effective_message.text
     if check_user(user):
         data = msg.split("/character")[1].strip()
-        markup = character_inline(data)
+        markup = character_inline(user, data)
         await update.message.reply_animation(
             animation=LOADING,
             caption=f"Searching for {bold(data.capitalize())} ...",

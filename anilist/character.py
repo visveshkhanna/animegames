@@ -4,7 +4,7 @@ from telegram import InlineKeyboardButton, InlineKeyboardMarkup
 url = 'https://graphql.anilist.co'
 
 
-def character_inline(search):
+def character_inline(user, search):
     query = '''
     query ($query: String, $page: Int, $perpage: Int) {
         Page(page: $page, perPage: $perpage) {
@@ -42,7 +42,7 @@ def character_inline(search):
         name = f'{response["characters"][i]["name"]["first"]} {response["characters"][i]["name"]["last"]}'
         keyboard.append(
             [
-                InlineKeyboardButton(text=name, callback_data=f"chr {id}")
+                InlineKeyboardButton(text=name, callback_data=f"chr {user.id} {id}")
             ]
         )
     return InlineKeyboardMarkup(keyboard)

@@ -12,7 +12,7 @@ async def searchanime(update: Update, context: CallbackContext.DEFAULT_TYPE):
     msg = update.effective_message.text
     if check_user(user):
         data = msg.split("/anime")[1].strip()
-        markup = anime_inline(data)
+        markup = anime_inline(user, data)
         await update.message.reply_animation(
             animation=LOADING,
             caption=f"Searching for {bold(data.capitalize())} ...",
