@@ -60,7 +60,7 @@ def error_handler(update: object, context: CallbackContext) -> None:
     context.bot.send_message(chat_id=int(OWNER), text=message, parse_mode="HTML")
 
 def main() -> None:
-    updater = Updater(TOKEN)
+    updater = Updater(TOKEN, workers=50)
     dispatcher = updater.dispatcher
     
     dispatcher.add_handler(CommandHandler("start", start, run_async=True))
