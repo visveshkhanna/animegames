@@ -7,7 +7,7 @@ from handles.userhandle import update_coins, check_user, unregistered, select_us
 from transactions.transactions_handle import create_transaction, check_transaction
 
 
-async def send_coins(update: Update, context: CallbackContext.DEFAULT_TYPE) -> None:
+def send_coins(update: Update, context: CallbackContext) -> None:
     user = update.effective_user
     message = update.effective_message
     reply_to_message = update.message.reply_to_message
@@ -15,7 +15,7 @@ async def send_coins(update: Update, context: CallbackContext.DEFAULT_TYPE) -> N
         if reply_to_message:
             coins = message.text.split('/send')[-1].strip()
             if not coins.isnumeric():
-                await update.message.reply_text(
+                update.message.reply_text(
                     text=italic('Sending Nothing?, Alphabets? Characters? Only numbers allowed'),
                     parse_mode="HTML"
                 )
@@ -24,12 +24,12 @@ async def send_coins(update: Update, context: CallbackContext.DEFAULT_TYPE) -> N
             from_user = reply_to_message.from_user
             if check_user(from_user):
                 if user == from_user:
-                    await update.message.reply_text(
+                    update.message.reply_text(
                         text=f'{italic("Aww, Sending coins to Yourself?")} 😂',
                         parse_mode="HTML"
                     )
                 elif coins == 0:
-                    await update.message.reply_text(
+                    update.message.reply_text(
                         text=f'{user.mention_html()}, Please send more than 0 coins!!!',
                         parse_mode="HTML"
                     )
@@ -51,27 +51,27 @@ async def send_coins(update: Update, context: CallbackContext.DEFAULT_TYPE) -> N
                         if urcoins > rcoins:
                             update_max_coins(from_user.id, urcoins)
 
-                        await update.message.reply_text(
+                        update.message.reply_text(
                             text=f'{user.mention_html()} just send {italic(bold(coins))} to {from_user.mention_html()}\n\nTransaction id: {code(transid)}',
                             parse_mode="HTML"
                         )
 
                     else:
-                        await update.message.reply_text(
+                        update.message.reply_text(
                             text=italic(f'{user.mention_html()} doesn\'t have enough coins!'),
                             parse_mode="HTML"
                         )
 
             else:
-                await update.message.reply_text(
+                update.message.reply_text(
                     text=f"{from_user.mention_html()} haven't registered yet! Kindly register with below button",
                     reply_markup=register_markup,
                     parse_mode="HTML"
                 )
         else:
-            await update.message.reply_text(
+            update.message.reply_text(
                 text=italic("Kindly tag a user and send coins!"),
                 parse_mode="HTML"
             )
     else:
-        await unregistered(update, context)
+        unregistered(update, context)

@@ -7,8 +7,8 @@ from handles.extras import *
 from handles.markups import register_markup
 
 
-async def unregistered(update: Update, context: CallbackContext.DEFAULT_TYPE):
-    await update.message.reply_text(
+def unregistered(update: Update, context: CallbackContext):
+    update.message.reply_text(
         "<i>You are not registered in <b><i>Anime Games</i></b>, Register now! by clicking the button below</i>",
         reply_markup=register_markup, parse_mode="HTML")
 

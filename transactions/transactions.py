@@ -5,7 +5,7 @@ from handles.userhandle import unregistered, check_user
 from transactions.transactions_handle import get_transactions, ListHandle, transaction_message
 
 
-async def view_trans(update: Update, context: CallbackContext.DEFAULT_TYPE):
+def view_trans(update: Update, context: CallbackContext):
     user = update.effective_user
     if check_user(user):
         split = ListHandle(get_transactions(user), 10)
@@ -21,7 +21,7 @@ async def view_trans(update: Update, context: CallbackContext.DEFAULT_TYPE):
             for i, cont in enumerate(data):
                 messagecont = transaction_message(cont, i+1)
                 message += messagecont
-            await update.message.reply_text(
+            update.message.reply_text(
                 text=message,
                 parse_mode="HTML",
                 reply_markup=next_button
@@ -32,9 +32,9 @@ async def view_trans(update: Update, context: CallbackContext.DEFAULT_TYPE):
             for i, cont in enumerate(data):
                 messagecont = transaction_message(cont, i+1)
                 message += messagecont
-            await update.message.reply_text(
+            update.message.reply_text(
                 text=message,
                 parse_mode="HTML"
             )
     else:
-        await unregistered(update, context)
+        unregistered(update, context)

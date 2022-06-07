@@ -13,17 +13,17 @@ def about_helper(user):
     return [banner, content]
 
 
-async def about(update: Update, context: CallbackContext):
+def about(update: Update, context: CallbackContext):
     user = update.effective_user
     if check_user(user):
         obj = about_helper(user)
         banner = obj[0]
         message = obj[1]
 
-        await update.message.reply_photo(
+        update.message.reply_photo(
             photo=banner,
             caption=message,
             parse_mode="HTML"
         )
     else:
-        await unregistered(update, context)
+        unregistered(update, context)

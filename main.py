@@ -1,10 +1,9 @@
-import asyncio
 import html
 import json
 import logging
 import traceback
 
-from telegram.ext import Application, CommandHandler, CallbackQueryHandler, filters
+from telegram.ext import Updater, CommandHandler, CallbackQueryHandler, filters
 
 from commands.extras import ping_command
 from commands.search_anime import searchanime
@@ -29,19 +28,19 @@ OWNER = data["OWNER"]
 
 
 # Command Handles
-async def start(update: Update, context: CallbackContext.DEFAULT_TYPE) -> None:
+def start(update: Update, context: CallbackContext) -> None:
     user = update.effective_user
     nonr_message = f"Hey {user.mention_html('Traveller')},\n\nWelcome to the <b>world</b> of <b><i>Anime " \
                    f"Games</i></b>, Register now to get started by clicking the button below! "
     r_message = f"Hey {user.mention_html('Traveller')},\n\nWelcome to the <b>world</b> of <b><i>Anime Games</i></b>, " \
                 f"Hope you have fun! "
     if check_user(user):
-        await update.message.reply_text(r_message, parse_mode="HTML")
+        update.message.reply_text(r_message, parse_mode="HTML")
     else:
-        await update.message.reply_text(nonr_message, reply_markup=register_markup, parse_mode="HTML")
+        update.message.reply_text(nonr_message, reply_markup=register_markup, parse_mode="HTML")
 
 
-async def error_handler(update: object, context: CallbackContext.DEFAULT_TYPE) -> None:
+async def error_handler(update: object, context: CallbackContext) -> None:
     logger.error(msg="Exception while handling an update:", exc_info=context.error)
 
     tb_list = traceback.format_exception(None, context.error, context.error.__traceback__)
@@ -58,32 +57,35 @@ async def error_handler(update: object, context: CallbackContext.DEFAULT_TYPE) -
     )
 
     # Finally, send the message
-    await Bot(TOKEN).send_message(
+    Bot(TOKEN).send_message(
         chat_id=OWNER, text=message, parse_mode="HTML"
     )
 
 
 def main() -> None:
-    application = Application.builder().token(TOKEN).build()
-    # Commands
-    application.add_handler(CommandHandler("start", start))
-    application.add_handler(CommandHandler("info", info.about))
-    application.add_handler(CommandHandler("send", send.send_coins))
-    application.add_handler(CommandHandler("anime", searchanime))
-    application.add_handler(CommandHandler("character", searchcharacter))
-    application.add_handler(CommandHandler("ping", ping_command))
-    application.add_handler(CommandHandler("trans", view_trans))
-    application.add_handler(CommandHandler("waifu", waifu_com))
-    application.add_handler(CommandHandler('speed', speedtest, filters=filters.User(user_id=int(OWNER))))
+    updater = Updater(TOKEN)
+    dispatcher = updater.dispatcher
+    
+    dispatcher.add_handler(CommandHandler("start", start, run_async=True))
+    dispatcher.add_handler(CommandHandler("info", info.about, run_async=True))
+    dispatcher.add_handler(CommandHandler("send", send.send_coins, run_async=True))
+    dispatcher.add_handler(CommandHandler("anime", searchanime, run_async=True))
+    dispatcher.add_handler(CommandHandler("character", searchcharacter, run_async=True))
+    dispatcher.add_handler(CommandHandler("ping", ping_command, run_async=True))
+    dispatcher.add_handler(CommandHandler("trans", view_trans, run_async=True))
+    dispatcher.add_handler(CommandHandler("waifu", waifu_com, run_async=True))
+    dispatcher.add_handler(CommandHandler('speed', speedtest, filters=filters.Filters.user(int(OWNER)), run_async=True))
 
     # Inline Handle
-    application.add_handler(CallbackQueryHandler(inlinehandle))
+    dispatcher.add_handler(CallbackQueryHandler(inlinehandle, run_async=True))
 
     # Error handle
-    application.add_error_handler(error_handler)
+    dispatcher.add_error_handler(error_handler, run_async=True)
 
-    # Poll bot
-    application.run_polling(drop_pending_updates=True)
+    # Poll botd
+    updater.start_polling(drop_pending_updates=True)
+
+    updater.idle()
 
 
 if __name__ == "__main__":

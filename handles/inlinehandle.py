@@ -13,23 +13,23 @@ data = dotenv_values(".env")
 TOKEN = data["TOKEN"]
 
 
-async def inlinehandle(update: Update, context: CallbackContext.DEFAULT_TYPE):
+def inlinehandle(update: Update, context: CallbackContext):
     user = update.effective_user
     query = update.callback_query
     if query.data == "register":
-        await query.answer()
+        query.answer()
         if not check_user(user):
             register_user(user)
-            await query.edit_message_text(
+            query.edit_message_text(
                 write_timeout=5,
                 text="<i>Registering...</i>",
                 parse_mode="HTML"
             )
-            await query.delete_message(5)
-            await Bot(TOKEN).send_message(chat_id=update.effective_chat.id, text=italic("Register complete"),
+            query.delete_message(5)
+            Bot(TOKEN).send_message(chat_id=update.effective_chat.id, text=italic("Register complete"),
                                           parse_mode="HTML")
         else:
-            await query.edit_message_text(
+            query.edit_message_text(
                 text=italic(f"{user.mention_html()} have already registered!"),
                 parse_mode="HTML"
             )
@@ -45,10 +45,10 @@ async def inlinehandle(update: Update, context: CallbackContext.DEFAULT_TYPE):
                 message = anime_message(anime_id, anime)
                 new = True
 
-            await query.answer()
-            await query.delete_message()
+            query.answer()
+            query.delete_message()
 
-            result = await Bot(TOKEN).send_photo(
+            result = Bot(TOKEN).send_photo(
                 chat_id=update.effective_chat.id,
                 photo=anime_banner,
                 caption=message,
@@ -58,7 +58,7 @@ async def inlinehandle(update: Update, context: CallbackContext.DEFAULT_TYPE):
                 fileid = result["photo"][-1].file_id
                 save_anime(anime_id, message, fileid)
         else:
-            await query.answer("Not allowed", show_alert=True)
+            query.answer("Not allowed", show_alert=True)
 
     if "chr" in query.data:
         character_id = int(query.data.split(" ")[-1])
@@ -72,10 +72,10 @@ async def inlinehandle(update: Update, context: CallbackContext.DEFAULT_TYPE):
                 message = character_message(character_id, character)
                 new = True
 
-            await query.answer()
-            await query.delete_message()
+            query.answer()
+            query.delete_message()
 
-            result = await Bot(TOKEN).send_photo(
+            result = Bot(TOKEN).send_photo(
                 chat_id=update.effective_chat.id,
                 photo=character_banner,
                 caption=message,
@@ -85,12 +85,12 @@ async def inlinehandle(update: Update, context: CallbackContext.DEFAULT_TYPE):
                 fileid = result["photo"][-1].file_id
                 save_character(character_id, message, fileid)
         else:
-            await query.answer("Not allowed", show_alert=True)
+            query.answer("Not allowed", show_alert=True)
     
     if "TRA" in query.data:
         callbackdata = query.data
         if user.id == int(callbackdata.split(" ")[1]):
-            await query.answer()
+            query.answer()
             callbackdata = int(callbackdata.split(" ")[-1])
             data = ListHandle(get_transactions(user), 10)
             if (callbackdata == (len(data)-1)):
@@ -120,10 +120,10 @@ async def inlinehandle(update: Update, context: CallbackContext.DEFAULT_TYPE):
             for i, cont in enumerate(data):
                 messagecont = transaction_message(cont, i+1)
                 message += messagecont
-            await query.edit_message_text(
+            query.edit_message_text(
                 text=message,
                 parse_mode="HTML",
                 reply_markup=button
             )
         else:
-            await query.answer("Not allowed", show_alert=True)
+            query.answer("Not allowed", show_alert=True)

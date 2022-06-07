@@ -3,8 +3,8 @@ from telegram.ext import CallbackContext
 from speedtest import Speedtest
 from handles.extras import italic
 
-async def speedtest(update: Update, context: CallbackContext):
-    speed = await update.message.reply_text(
+def speedtest(update: Update, context: CallbackContext):
+    speed = update.message.reply_text(
         text=italic("Running Speed Test . . . "),
         parse_mode="HTML"
     )
@@ -25,7 +25,7 @@ async def speedtest(update: Update, context: CallbackContext):
 <b>Ping:</b> <code>{result['ping']} ms</code>
 <b>ISP Rating:</b> <code>{result['client']['isprating']}</code>
 '''
-    await speed.edit_text(
+    speed.edit_text(
         text=string_speed,
         parse_mode="HTML"
     )

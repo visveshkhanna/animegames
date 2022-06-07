@@ -7,23 +7,23 @@ from const import mysql_data
 from handles.userhandle import check_user, unregistered
 
 
-async def waifu_com(update: Update, context: CallbackContext.DEFAULT_TYPE):
+def waifu_com(update: Update, context: CallbackContext):
     user = update.effective_user
     if check_user(user):
         gen = waifu_gen()
         if check_waifu(gen):
             wai = get_waifu(gen)
-            await update.message.reply_photo(
+            update.message.reply_photo(
                 photo=wai
             )
         else:
-            data = await update.message.reply_photo(
+            data = update.message.reply_photo(
                 photo=gen
             )
             fileid = data["photo"][-1].file_id
             save_waifu(fileid, gen)
     else:
-        await unregistered(update, context)
+        unregistered(update, context)
 
 
 def waifu_gen():
