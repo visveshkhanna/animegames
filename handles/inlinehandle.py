@@ -117,8 +117,9 @@ def inlinehandle(update: Update, context: CallbackContext):
                 button = InlineKeyboardMarkup(button)
             data = data[callbackdata]
             message = f"Transation History\nPage {callbackdata+1}\n\n"
+            d = callbackdata * 10
             for i, cont in enumerate(data):
-                messagecont = transaction_message(cont, i+1)
+                messagecont = transaction_message(cont, (d+i+1))
                 message += messagecont
             query.edit_message_text(
                 text=message,
