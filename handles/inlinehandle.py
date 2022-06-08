@@ -21,7 +21,6 @@ def inlinehandle(update: Update, context: CallbackContext):
         if not check_user(user):
             register_user(user)
             query.edit_message_text(
-                write_timeout=5,
                 text="<i>Registering...</i>",
                 parse_mode="HTML"
             )
